@@ -65,6 +65,7 @@ import okhttp3.Response;
 import static android.Manifest.permission.MANAGE_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import com.infinigru.pelib.PeLibraryMain;
 
 
 public class MainActivity extends AppCompatActivity
@@ -79,8 +80,22 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Test를 위해 LocalApi 설정
+//        PeLibraryMain.setApiAddress(getApplicationContext(), "http://192.168.20.30:16080/gru-voice-collector/");
+//        PeLibraryMain.setApiAddress(getApplicationContext(), "http://192.168.30.44:16080/gru-voice-collector/");
+        // firebase 설정 초기화 / broadcast message receivers 등록
+
+        PeLibraryMain.setApiAddress(getApplicationContext(), "http://192.168.30.44:8081/");
+        PeLibraryMain.setHomeApiAddress(getApplicationContext(), "http://192.168.30.44:8083/");
+        PeLibraryMain.setPartnerCode(getApplicationContext(), "jb");
+
+
+        PeLibraryMain.getInstance(this).initialize(this);
+
         setTheme(R.style.SplashScreenTheme);
         super.onCreate(savedInstanceState);
+
         setTheme(R.style.Theme_MyApplication);
         setContentView(R.layout.activity_main);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -119,6 +134,34 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // 1. 사용자 정보 서버에 등록
+        // 2. 새로운 앱이 설치되거나 업데이트 된 경우 새로 수집
+        // 3. 사용자 핸드폰이 다음 환경인 경우 팝업을 보여주며 종료를 유도한다.(루팅, 에뮬레이터, USB debugging)
+        // 4. 원격제어가 실행되는 경우 메시지를 보여준다.
+        // 5. 악성앱 설치가 확인되면 팝업을 보여준다.
+        PeLibraryMain.getInstance(this).startDetecting(this);
+
+        // ...
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // broadcast message receivers 등록 해제
+        PeLibraryMain.getInstance(this).destroy(this);
+
+        // ...
+    }
+
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
+
 
 android {
     compileSdkVersion 30
@@ -12,6 +14,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.8.3"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,6 +29,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -39,4 +46,30 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+
+    // 4. 피싱아이즈가 내부적으로 사용하는 외부 라이브러리에 대한 의존성 추가
+    implementation 'android.arch.work:work-runtime:1.0.1'
+    implementation 'androidx.work:work-runtime:2.7.0-alpha02'
+    implementation "androidx.work:work-multiprocess:2.7.0-alpha02"
+    implementation 'androidx.work:work-gcm:2.7.0-alpha02'
+
+    implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation 'junit:junit:4.12'
+
+    debugImplementation 'com.infinigru.pelib:pelib-general:1.0.1:debug@aar'
+    releaseImplementation 'com.infinigru.pelib:pelib-general:1.0.1:release@aar'
+
+    // firebase 관련 의존성
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
+
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+
+//    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+
+    implementation "androidx.multidex:multidex:2.0.1"
+    
+
 }
